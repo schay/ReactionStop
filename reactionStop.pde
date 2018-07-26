@@ -14,10 +14,12 @@ int faceCount = 0;
 // List of detected faces (every frame)
 Rectangle[] faces;
 
-ArrayList<Butterfly> butterfly;
-int butterflyNum = 0;
+ArrayList<Butterfly> butterflies;
+int butterflyNum = 10;
+ArrayList<Flower> flowers;
+int flowerNum = 20;
 
-float scale = 0.5;
+float scale = 2.5;
 
 void setup() {
   surface.setSize(int(640*scale), int(480*scale));
@@ -32,10 +34,17 @@ void setup() {
 
   video.start();
   
-  butterfly = new ArrayList<Butterfly>();
-  for(int i = 0; i < butterflyNum; i++) {
-    butterfly.add(new Butterfly());
+    
+  flowers = new ArrayList<Flower>();
+  for(int i = 0; i < flowerNum; i++) {
+    flowers.add(new Flower());
   }
+  
+  butterflies = new ArrayList<Butterfly>();
+  for(int i = 0; i < butterflyNum; i++) {
+    butterflies.add(new Butterfly());
+  }
+
     
 }
 
@@ -74,14 +83,17 @@ void draw() {
   
   for (Face f : faceList) {
     strokeWeight(2);
-    f.display();
+    //f.display();
   }
 
   noFill();
   stroke(0, 255, 0);
 
-  for(Butterfly butt : butterfly){
-    butt.subDraw();
+  for(Flower f : flowers) {
+    f.subDraw();
+  }
+  for(Butterfly b : butterflies){
+    b.subDraw();
   }
 }
 

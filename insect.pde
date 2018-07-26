@@ -13,13 +13,14 @@ class Butterfly {
   private float escapeThreshold = random(5, 30);
   private boolean flapIsOpen = false;
   private int flapP = 0;
-  private int faceID = -1;
   private float flappingSpeed = random(3,5);
   private boolean isHidden = true;
   private int hideTime = int(random(5, 30));
+  private int flowerID = -1;
+  private PVector inertia = new PVector(random(-5, 5), random(-5, 5));
   
   Butterfly() {
-    int xSize = int(random(50, 100));
+    int xSize = int(random(25, 40));
     
     image.resize(xSize, int(xSize*image.height/image.width));
     size.x = image.width;
@@ -66,8 +67,8 @@ class Butterfly {
     move();
     flapping();  
       
-    if(faceList.size() != 0) {
-      faceID = faceList.get(int(random(faceList.size()))).id;
+    if(flowers.size() != 0) {
+      flowerID = int(random(flowers.size()));
       policy = "chase";
     }
     if(position.x < -width || position.x > width*2 || position.y < -height || position.y > height*2) {
@@ -79,22 +80,21 @@ class Butterfly {
   private void chase() {
     move();
     flapping();  
-    boolean isExistFace = false;
-    for (Face f : faceList) {
-      if(f.id == faceID) {
-        isExistFace = true;
-        //float distance = dist(position.x, position.y, f.r.x + f.r.width/2.0, f.r.y + f.r.height/2.0);
-        if(position.x > f.r.x && position.x < f.r.x + f.r.width
-          && position.y > f.r.y && position.y < f.r.y + f.r.height) {
-          //if(distance < escapeThreshold) {
-          stopFacePosition.x = f.r.x;
-          stopFacePosition.y = f.r.y;
-          policy = "stoped";
-          time = Utils.getTime();
-        }
+    boolean isExistFlower = false;
+    Flower f = flowers.get(flowerID);
+    if(f.isBloom) {
+      isExistFlower = true;
+      //float distance = dist(position.x, position.y, f.r.x + f.r.width/2.0, f.r.y + f.r.height/2.0);
+      if(position.x > f.bloomPosition.x && position.x < f.bloomPosition.x + f.size
+        && position.y > f.bloomPosition.y && position.y < f.bloomPosition.y + f.size) {
+        //if(distance < escapeThreshold) {
+        stopFacePosition.x = f.bloomPosition.x;
+        stopFacePosition.y = f.bloomPosition.y;
+        policy = "stoped";
+        time = Utils.getTime();
       }
     }
-    if(!isExistFace) {
+    if(!isExistFlower) {
       policy = "flying";
     }
   }
@@ -103,16 +103,15 @@ class Butterfly {
     flapP = 0;
     vector.x = 0;
     vector.y = 0;
-    boolean isStopFace = false;
-    for (Face f : faceList) {
-      if(f.id == faceID) {
-        float distance = dist(stopFacePosition.x, stopFacePosition.y, f.r.x, f.r.y);
-        if(distance < escapeThreshold) {
-          isStopFace = true;
-        }
+    boolean isStopFlower = false;
+    Flower f = flowers.get(flowerID);
+    if(f.isBloom) {
+      float distance = dist(stopFacePosition.x, stopFacePosition.y, f.bloomPosition.x, f.bloomPosition.y);
+      if(distance < escapeThreshold) {
+        isStopFlower = true;
       }
     }
-    if(!isStopFace) {
+    if(!isStopFlower) {
       policy = "escape";
     }
   }
@@ -134,38 +133,36 @@ class Butterfly {
   }
   
   private void move() {
-    int xMin = -10, xMax = 10;
-    int yMin = -10, yMax = 10;
+    float xMin = -10 + inertia.x, xMax = 10 + inertia.x;
+    float yMin = -10 + inertia.y, yMax = 10 + inertia.y;
     if(policy == "chase") {
-      for (Face f : faceList) {
-        if(f.id == faceID) {
-          if(f.r.x > position.x) {
-            xMin = 0;
-            xMax = xMax/2;
-          }else {
-            xMax = 0;
-          }
-          if(f.r.y > position.y) {
-            yMin = 0;
-          }else {
-            yMax = 0;
-          }
+      Flower f = flowers.get(flowerID);
+      if(f.isBloom) {
+        if(f.bloomPosition.x > position.x) {
+          xMin = 0;
+          xMax = xMax/2;
+        }else {
+          xMax = 0;
+        }
+        if(f.bloomPosition.y > position.y) {
+          yMin = 0;
+        }else {
+          yMax = 0;
         }
       }
     }
     if(policy == "escape") {
-      for (Face f : faceList) {
-        if(f.id == faceID) {
-          if(f.r.x < position.x) {
-            xMin = 0;
-          }else {
-            xMax = 0;
-          }
-          if(f.r.y < position.y) {
-            yMin = 0;
-          }else {
-            yMax = 0;
-          }
+      Flower f = flowers.get(flowerID);
+      if(f.isBloom) {
+        if(f.bloomPosition.x < position.x) {
+          xMin = 0;
+        }else {
+          xMax = 0;
+        }
+        if(f.bloomPosition.y < position.y) {
+          yMin = 0;
+        }else {
+          yMax = 0;
         }
       }
     }
