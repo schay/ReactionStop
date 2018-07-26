@@ -1,11 +1,10 @@
-import gab.opencv.*;
 
 
-class Butterfly{
+class Butterfly {
   private String butterflyImageNames[] = {"ageha.png", "aosuji.png", "jakouageha.png", "monki.png", "monshiro.png"};
   private PVector stopFacePosition = new PVector();
   private PVector size = new PVector();
-  private PVector position = new PVector();
+  private PVector position = new PVector(random(width), random(height));
   private PVector vector = new PVector(0, 0);
   private String policy = "hidden";
   private PImage image = loadImage("data/" + butterflyImageNames[int(random(butterflyImageNames.length))]);
@@ -17,14 +16,9 @@ class Butterfly{
   private int faceID = -1;
   private float flappingSpeed = random(3,5);
   private boolean isHidden = true;
-  private int hideTime = int(random(5, 10));
+  private int hideTime = int(random(5, 30));
   
   Butterfly() {
-    position.x = random(width);
-    position.y = random(height);
-    //position.x = 0;
-    //position.y = 0;
-    
     int xSize = int(random(50, 100));
     
     image.resize(xSize, int(xSize*image.height/image.width));
@@ -35,7 +29,7 @@ class Butterfly{
   }
   
   public void subDraw() {
-    println(policy);
+    //println(policy);
     switch(policy)  {
       case "flying":
         flying();
@@ -58,7 +52,7 @@ class Butterfly{
     position.add(vector);
     
     
-    if(isHidden) {
+    if(!isHidden) {
       PImage tmp_image = image.get();
       
       tmp_image.resize(int(size.x*(flapP/10.0)), int(size.y));
@@ -73,7 +67,7 @@ class Butterfly{
     flapping();  
       
     if(faceList.size() != 0) {
-      faceID = faceList.get(0).id;
+      faceID = faceList.get(int(random(faceList.size()))).id;
       policy = "chase";
     }
     if(position.x < -width || position.x > width*2 || position.y < -height || position.y > height*2) {
@@ -140,22 +134,43 @@ class Butterfly{
   }
   
   private void move() {
-    /*
-    if(position.x < width/2) {
-      vector.x += random(0, 1);
+    int xMin = -10, xMax = 10;
+    int yMin = -10, yMax = 10;
+    if(policy == "chase") {
+      for (Face f : faceList) {
+        if(f.id == faceID) {
+          if(f.r.x > position.x) {
+            xMin = 0;
+            xMax = xMax/2;
+          }else {
+            xMax = 0;
+          }
+          if(f.r.y > position.y) {
+            yMin = 0;
+          }else {
+            yMax = 0;
+          }
+        }
+      }
     }
-    else {
-      vector.x += random(-1, 0);
+    if(policy == "escape") {
+      for (Face f : faceList) {
+        if(f.id == faceID) {
+          if(f.r.x < position.x) {
+            xMin = 0;
+          }else {
+            xMax = 0;
+          }
+          if(f.r.y < position.y) {
+            yMin = 0;
+          }else {
+            yMax = 0;
+          }
+        }
+      }
     }
-    if(position.y < height/2) {
-      vector.y += random(0, 1);
-    }
-    else {
-      vector.y += random(-1, 0);
-    }
-    */
-    vector.x = int(random(-10, 10))*2;
-    vector.y = int(random(-10, 10))*2;
+    vector.x = int(random(xMin, xMax))*2;
+    vector.y = int(random(yMin, yMax))*2;
   }
   
   private void flapping() {

@@ -15,14 +15,14 @@ int faceCount = 0;
 Rectangle[] faces;
 
 ArrayList<Butterfly> butterfly;
-int butterflyNum = 5;
+int butterflyNum = 0;
 
-int scale = 1;
+float scale = 0.5;
 
 void setup() {
-  surface.setSize(640*scale, 480*scale);
-  width = width/scale;
-  height = height/scale;
+  surface.setSize(int(640*scale), int(480*scale));
+  width = int(width/scale);
+  height = int(height/scale);
   video = new Capture(this, width, height);
   opencv = new OpenCV(this, width, height);
   opencv.loadCascade(OpenCV.CASCADE_FRONTALFACE);
