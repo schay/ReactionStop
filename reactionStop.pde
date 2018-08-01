@@ -83,7 +83,7 @@ void draw() {
   
   for (Face f : faceList) {
     strokeWeight(2);
-    f.display();
+    //f.display();
   }
 
   noFill();

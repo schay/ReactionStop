@@ -122,9 +122,15 @@ class Butterfly {
   private void escape() {
     move();
     flapping();
+    if(position.x < -width || position.x > width*2 || position.y < -height || position.y > height*2) {
+      policy = "hidden";
+      time = Utils.getTime();
+    }
+    /*
     if(Utils.getTime() - time > coolTime) {
       policy = "flying";
     }
+    */
   }
   
   private void hidden() {
