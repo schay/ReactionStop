@@ -1,6 +1,7 @@
 
 
 class Butterfly {
+  
   private String butterflyImageNames[] = {"ageha.png", "aosuji.png", "jakouageha.png", "monki.png", "monshiro.png"};
   private PVector stopFacePosition = new PVector();
   private PVector size = new PVector();
@@ -8,7 +9,7 @@ class Butterfly {
   private PVector vector = new PVector(0, 0);
   private String policy = "hidden";
   private PImage image = loadImage("data/" + butterflyImageNames[int(random(butterflyImageNames.length))]);
-  private float coolTime = random(5, 30);
+  private float coolTime = random(10, 30);
   private float time = Utils.getTime();
   private float escapeThreshold = random(5, 30);
   private boolean flapIsOpen = false;
@@ -109,6 +110,8 @@ class Butterfly {
       float distance = dist(stopFacePosition.x, stopFacePosition.y, f.bloomPosition.x, f.bloomPosition.y);
       if(distance < escapeThreshold) {
         isStopFlower = true;
+        position.x = f.bloomPosition.x;
+        position.y = f.bloomPosition.y;
       }
     }
     if(!isStopFlower) {
@@ -125,7 +128,10 @@ class Butterfly {
   }
   
   private void hidden() {
-    isHidden = true;
+    if(!isHidden) {
+      isHidden = true;
+      time = Utils.getTime();
+    }
     if(Utils.getTime() - time > hideTime) {
       policy = "flying";
       isHidden = false;

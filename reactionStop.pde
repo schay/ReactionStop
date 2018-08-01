@@ -15,11 +15,11 @@ int faceCount = 0;
 Rectangle[] faces;
 
 ArrayList<Butterfly> butterflies;
-int butterflyNum = 10;
+int butterflyNum = 20;
 ArrayList<Flower> flowers;
-int flowerNum = 20;
+int flowerNum = 15;
 
-float scale = 2.5;
+float scale = 1;
 
 void setup() {
   surface.setSize(int(640*scale), int(480*scale));
@@ -83,7 +83,7 @@ void draw() {
   
   for (Face f : faceList) {
     strokeWeight(2);
-    //f.display();
+    f.display();
   }
 
   noFill();
